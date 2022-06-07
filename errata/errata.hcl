@@ -2,10 +2,6 @@ version = "0.1"
 
 options {
   prefix      = "err-mimir"
-  guides_path = "errata/guides/%s.md"
-  imports     = [
-#    "github.com/grafana/mimir/pkg/mimirpb"
-  ]
 }
 
 errors "label-name-too-long" {
