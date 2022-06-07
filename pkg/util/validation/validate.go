@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/grafana/mimir/pkg/errata"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
 
@@ -223,7 +224,7 @@ func ValidateLabels(cfg LabelValidationConfig, userID string, ls []mimirpb.Label
 			return newInvalidLabelError(ls, l.Name)
 		} else if len(l.Name) > maxLabelNameLength {
 			DiscardedSamples.WithLabelValues(reasonLabelNameTooLong, userID).Inc()
-			return newLabelNameTooLongError(ls, l.Name)
+			return errata.NewLabelNameTooLongErr(nil, l.Name, formatLabelSet(ls))
 		} else if len(l.Value) > maxLabelValueLength {
 			DiscardedSamples.WithLabelValues(reasonLabelValueTooLong, userID).Inc()
 			return newLabelValueTooLongError(ls, l.Value)

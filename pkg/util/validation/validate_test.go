@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/grafana/mimir/pkg/errata"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/prometheus/common/model"
@@ -89,10 +90,11 @@ func TestValidateLabels(t *testing.T) {
 		{
 			map[model.LabelName]model.LabelValue{model.MetricNameLabel: "badLabelName", "this_is_a_really_really_long_name_that_should_cause_an_error": "test_value_please_ignore"},
 			false,
-			newLabelNameTooLongError([]mimirpb.LabelAdapter{
-				{Name: model.MetricNameLabel, Value: "badLabelName"},
-				{Name: "this_is_a_really_really_long_name_that_should_cause_an_error", Value: "test_value_please_ignore"},
-			}, "this_is_a_really_really_long_name_that_should_cause_an_error"),
+			errata.NewLabelNameTooLongErr(nil, "this_is_a_really_really_long_name_that_should_cause_an_error",
+				formatLabelSet([]mimirpb.LabelAdapter{
+					{Name: model.MetricNameLabel, Value: "badLabelName"},
+					{Name: "this_is_a_really_really_long_name_that_should_cause_an_error", Value: "test_value_please_ignore"},
+				})),
 		},
 		{
 			map[model.LabelName]model.LabelValue{model.MetricNameLabel: "badLabelValue", "much_shorter_name": "test_value_please_ignore_no_really_nothing_to_see_here"},
