@@ -318,7 +318,7 @@ func TestMultitenantCompactor_HandleBlockUpload_Complete(t *testing.T) {
 			},
 			Thanos: metadata.Thanos{
 				Labels: map[string]string{
-					mimir_tsdb.TenantIDExternalLabel: "test",
+					mimir_tsdb.CompactorShardIDExternalLabel: "test",
 				},
 				Files: []metadata.File{
 					{

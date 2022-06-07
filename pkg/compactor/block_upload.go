@@ -242,15 +242,14 @@ func (c *MultitenantCompactor) sanitizeMeta(logger log.Logger, tenantID string, 
 	}
 
 	meta.ULID = blockID
-	meta.Thanos.Labels[mimir_tsdb.TenantIDExternalLabel] = tenantID
 
 	var rejLbls []string
 	for l, v := range meta.Thanos.Labels {
 		switch l {
 		// Preserve these labels
-		case mimir_tsdb.TenantIDExternalLabel, mimir_tsdb.CompactorShardIDExternalLabel:
+		case mimir_tsdb.CompactorShardIDExternalLabel:
 		// Remove unused labels
-		case mimir_tsdb.IngesterIDExternalLabel, mimir_tsdb.DeprecatedShardIDExternalLabel:
+		case mimir_tsdb.DeprecatedTenantIDExternalLabel, mimir_tsdb.DeprecatedIngesterIDExternalLabel, mimir_tsdb.DeprecatedShardIDExternalLabel:
 			level.Debug(logger).Log("msg", fmt.Sprintf("removing unused external label from %s", block.MetaFilename),
 				"label", l, "value", v)
 			delete(meta.Thanos.Labels, l)
